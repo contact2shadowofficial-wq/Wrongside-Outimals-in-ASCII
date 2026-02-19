@@ -1,0 +1,50 @@
+from PIL import Image
+import os
+
+def image_to_richtext(path, width=74, height=42):
+    # Resize to 42p resolution (74x42 is ~16:9)
+    img = Image.open(path).convert("RGB")
+    img = img.resize((width, height))
+
+    ascii_chars = "@%#*+=-:. "
+    richtext = ""
+    for y in range(img.height):
+        prev_color = None
+        line = ""
+        for x in range(img.width):
+            r, g, b = img.getpixel((x, y))
+            color = f"#{r:02x}{g:02x}{b:02x}"
+            char = ascii_chars[int((r+g+b)/3 * len(ascii_chars) / 256)]
+
+            # Start a new font block if color changes
+            if color != prev_color:
+                if prev_color is not None:
+                    line += "</font>"
+                line += f"<font color=\"{color}\">"
+                prev_color = color
+
+            line += char
+
+        # Close the last font block for the line
+        if prev_color is not None:
+            line += "</font>"
+        line += "\n"
+        richtext += line
+    return richtext
+
+# Paths
+input_dir = r"C:\Users\ADMIN\Downloads\PoppyPlaytimeChapter5OutsideOutimalsVHS\Frames"
+output_dir = r"C:\Users\ADMIN\Downloads\PoppyPlaytimeChapter5OutsideOutimalsVHS\FramesASCII_42p"
+
+os.makedirs(output_dir, exist_ok=True)
+
+for filename in sorted(os.listdir(input_dir)):
+    if filename.lower().endswith((".png", ".jpg", ".jpeg")):
+        input_path = os.path.join(input_dir, filename)
+        output_path = os.path.join(output_dir, os.path.splitext(filename)[0] + ".txt")
+
+        richtext = image_to_richtext(input_path, width=74, height=42)
+        with open(output_path, "w", encoding="utf-8") as f:
+            f.write(richtext)
+
+        print(f"Converted {filename} → {output_path}")

@@ -41,7 +41,7 @@ for filename in sorted(os.listdir(input_dir)):
         input_path = os.path.join(input_dir, filename)
         output_path = os.path.join(output_dir, os.path.splitext(filename)[0] + ".txt")
 
-        richtext = image_to_richtext(input_path, width=60, height=60)
+        richtext = image_to_richtext(input_path, width=150, height=60)
         with open(output_path, "w", encoding="utf-8") as f:
             f.write(richtext)
 

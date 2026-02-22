@@ -1,8 +1,8 @@
 from PIL import Image
 import os
 
-def image_to_richtext(path, width=105, height=42):
-    # Resize to 42p resolution (fatter at 105x42)
+def image_to_richtext(path, width=50, height=20):
+    # Resize to very low resolution
     img = Image.open(path).convert("RGB")
     img = img.resize((width, height))
 
@@ -31,8 +31,8 @@ def image_to_richtext(path, width=105, height=42):
     return richtext
 
 # Paths
-input_dir = r"C:\Users\ADMIN\Downloads\PoppyPlaytimeChapter5OutsideOutimalsVHS\Frames_MBackup"
-output_dir = r"C:\Users\ADMIN\Downloads\PoppyPlaytimeChapter5OutsideOutimalsVHS\FramesASCII_42_MBackup"
+input_dir = r"C:\Users\ADMIN\Downloads\PoppyPlaytimeChapter5OutsideOutimalsVHS\Frames"
+output_dir = r"C:\Users\ADMIN\Downloads\PoppyPlaytimeChapter5OutsideOutimalsVHS\FramesASCII_Lowest"
 
 os.makedirs(output_dir, exist_ok=True)
 
@@ -41,7 +41,8 @@ for filename in sorted(os.listdir(input_dir)):
         input_path = os.path.join(input_dir, filename)
         output_path = os.path.join(output_dir, os.path.splitext(filename)[0] + ".txt")
 
-        richtext = image_to_richtext(input_path, width=150, height=60)
+        # Use the super low resolution
+        richtext = image_to_richtext(input_path, width=50, height=20)
         with open(output_path, "w", encoding="utf-8") as f:
             f.write(richtext)
 
